@@ -2,7 +2,9 @@ import { FlashList } from '@shopify/flash-list';
 import React, { useRef } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
@@ -80,6 +82,10 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     backgroundColor: '#fff',
+    paddingTop: Platform.select({
+      ios: 0,
+      android: StatusBar.currentHeight || 0,
+    }),
   },
   containerCenter: {
     alignItems: 'center',
