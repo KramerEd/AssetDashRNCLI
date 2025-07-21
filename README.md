@@ -1,97 +1,201 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# AssetDash Token Tracker
 
-# Getting Started
+A React Native application for tracking cryptocurrency tokens with real-time price updates, filtering, and sorting capabilities. Built with TypeScript and modern React Native architecture.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Features
 
-## Step 1: Start Metro
+- **Real-time Token Data**: Displays cryptocurrency tokens from AssetDash API with live price updates
+- **Advanced Filtering**: Filter tokens by NEW/PRO status and minimum price
+- **Flexible Sorting**: Sort by market cap, price, or creation date (ascending/descending)
+- **Persistent Filters**: Automatically saves filter preferences using MMKV storage
+- **Beautiful UI**: Modern card-based design with token icons and status tags
+- **Pull-to-Refresh**: Easy data refresh with gesture support
+- **Optimized Performance**: Uses LegendList for efficient rendering of frequently updating data
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🏗️ Architecture
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### Project Structure
 
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+src/
+├── components/          # Reusable UI components
+│   ├── FilterControls.tsx    # Filter switches and inputs
+│   ├── Header.tsx           # App header with token counts
+│   ├── SortControls.tsx     # Sorting button controls
+│   ├── TokenItem.tsx        # Individual token card component
+│   └── index.ts            # Component exports
+├── constants/          # App constants and configuration
+│   └── index.ts           # API URLs, intervals, storage keys
+├── hooks/             # Custom React hooks
+│   └── useTokenData.ts    # Token data management hook
+├── screens/           # Screen components
+│   └── MainScreen.tsx     # Main token list screen
+├── types/             # TypeScript type definitions
+│   └── index.ts          # TokenData interface and filter types
+└── utils/             # Utility functions
+    ├── formatters.ts     # Price and market cap formatters
+    └── storage.ts        # MMKV storage wrapper
 ```
 
-## Step 2: Build and run your app
+### Technology Stack
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **React Native 0.80.1** with **New Architecture** enabled
+- **TypeScript** for type safety
+- **@legendapp/list** for high-performance list rendering
+- **react-native-mmkv** for fast local storage
 
-### Android
+## 🔧 Technical Implementation
 
-```sh
-# Using npm
-npm run android
+### LegendList vs FlashList
 
-# OR using Yarn
-yarn android
+This app uses **LegendList** instead of FlashList for a practical reason: **real-time data updates**. The token prices update every second via a simulated price feed, and LegendList's `recycleItems` feature provides superior performance when dealing with frequently changing data. This ensures smooth scrolling and UI responsiveness even with constant price fluctuations.
+
+### Data Management
+
+- **API Integration**: Fetches live token data from AssetDash screener API
+- **Real-time Updates**: Simulates price changes every 1000ms for demo purposes
+- **Filter Persistence**: Saves user preferences (NEW/PRO toggles, price threshold) locally
+- **Efficient Rendering**: Only re-renders filtered/sorted data when necessary
+
+## 🚧 React Query Migration (Query Branch)
+
+The `query` branch contains a migration to **@tanstack/react-query** for enhanced data management:
+
+- **Query Caching**: Automatic caching of API responses
+- **Background Refetching**: Smart data synchronization
+- **Optimistic Updates**: Instant UI updates for filter changes
+- **Better Error Handling**: Robust error states and retry logic
+
+To explore the React Query implementation:
+
+```bash
+git checkout query
 ```
 
-### iOS
+## 📱 Getting Started
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### Prerequisites
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+- **Node.js** >= 18
+- **React Native CLI** or **Expo CLI**
+- **Android Studio** (for Android development)
+- **Xcode** (for iOS development - macOS only)
 
-```sh
-bundle install
+> **Note**: Complete the [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) before proceeding.
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd AssetDashRNCLI
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **iOS Setup** (macOS only)
+
+   ```bash
+   # Install Ruby dependencies
+   bundle install
+
+   # Install CocoaPods dependencies
+   cd ios && bundle exec pod install && cd ..
+   ```
+
+### Running the App
+
+1. **Start Metro Bundler**
+
+   ```bash
+   npm start
+   ```
+
+2. **Run on Android**
+
+   ```bash
+   npm run android
+   ```
+
+3. **Run on iOS**
+   ```bash
+   npm run ios
+   ```
+
+### Development Commands
+
+```bash
+# Lint code
+npm run lint
+
+# Run tests
+npm run test
+
+# Clean and rebuild (Android)
+cd android && ./gradlew clean && cd .. && npm run android
+
+# Reset Metro cache
+npm start -- --reset-cache
 ```
 
-Then, and every time you update your native dependencies, run:
+## 🔍 API Integration
 
-```sh
-bundle exec pod install
-```
+The app connects to AssetDash's cryptocurrency screener API:
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+- **Endpoint**: `https://dev-screener-api.assetdash.com/moby_screener/leaderboard/degen_list`
+- **Data**: Token prices, market caps, volumes, and metadata
+- **Update Frequency**: Real-time with simulated price variations
 
-```sh
-# Using npm
-npm run ios
+## 🎨 UI Components
 
-# OR using Yarn
-yarn ios
-```
+### TokenItem
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+Displays individual token information including:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+- Token icon and symbol
+- Wallet address (truncated)
+- Current price and market cap
+- Status tags (NEW, PRO, PUMP, BONK)
 
-## Step 3: Modify your app
+### FilterControls
 
-Now that you have successfully run the app, let's make changes!
+Provides filtering options:
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+- Toggle for NEW tokens only
+- Toggle for PRO tokens only
+- Minimum price threshold input
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### SortControls
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Sorting options:
 
-## Congratulations! :tada:
+- Market Cap (↓/↑)
+- Price (↓/↑)
+- Creation Date (Newest/Oldest)
 
-You've successfully run and modified your React Native App. :partying_face:
+## 🔧 Configuration
 
-### Now what?
+### Constants (`src/constants/index.ts`)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- `API_URL`: AssetDash API endpoint
+- `PRICE_UPDATE_INTERVAL`: Real-time update frequency (1000ms)
+- `STORAGE_KEYS`: MMKV storage key definitions
 
-# Troubleshooting
+### Storage Keys
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- `filter_is_new`: NEW token filter state
+- `filter_is_pro`: PRO token filter state
+- `filter_min_price`: Minimum price threshold
 
-# Learn More
+## 🚀 Performance Optimizations
 
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **LegendList**: Efficient virtual scrolling with item recycling
+- **MMKV**: Fast native storage for filter persistence
+- **Memoized Calculations**: Optimized filtering and sorting operations
+- **Hermes Engine**: Enhanced JavaScript performance
+- **New Architecture**: Modern React Native architecture for better performance
