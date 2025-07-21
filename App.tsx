@@ -5,15 +5,13 @@
  * @format
  */
 
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import MainScreen from './src/screens/MainScreen';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle="dark-content" />
       <MainScreen />
     </View>
   );
